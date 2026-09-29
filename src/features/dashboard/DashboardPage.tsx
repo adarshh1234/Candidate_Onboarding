@@ -108,7 +108,7 @@ export const DashboardPage: React.FC = () => {
                 </Button>
               </Link>
             ) : (
-              <Link to="/checklist">
+              <Link to="/candidate/checklist">
                 <Button
                   variant="secondary"
                   size="lg"
@@ -234,7 +234,7 @@ export const DashboardPage: React.FC = () => {
             </div>
 
             <div className="pt-2">
-              <Link to="/team">
+              <Link to="/candidate/team">
                 <Button variant="outline" size="sm" className="w-full text-xs">
                   <Users className="w-3.5 h-3.5 mr-1.5" />
                   View Team Members & Calendar

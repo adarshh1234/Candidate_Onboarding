@@ -240,8 +240,8 @@ export const TrainingPage: React.FC = () => {
 
       {/* Step Footer: Continue is allowed always */}
       <StepFooter
-        backTo="/policies"
-        nextTo="/team"
+        backTo="/candidate/policies"
+        nextTo="/candidate/team"
         canContinue={true}
         continueText="Continue to Team"
       />

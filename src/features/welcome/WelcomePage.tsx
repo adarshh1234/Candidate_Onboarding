@@ -11,8 +11,10 @@ import {
   Award,
   Sparkles,
   Download,
+  Clock,
 } from 'lucide-react';
 import { useOnboardingStore } from '@/store/onboarding.store';
+import { useHiringStore } from '@/store/hiring.store';
 import { OFFER_DETAILS } from '@/lib/constants';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { StepFooter } from '@/components/layout/StepFooter';
@@ -30,15 +32,59 @@ export const WelcomePage: React.FC = () => {
   const offerAccepted = useOnboardingStore((state) => state.offerAccepted);
   const acceptOffer = useOnboardingStore((state) => state.acceptOffer);
 
+  const hiringCandidate = useHiringStore((state) => state.getCandidate('CAND-001'));
+  const offerStatus = hiringCandidate?.offer?.status || 'Released';
+  const isOfferReleased = offerStatus === 'Released' || offerStatus === 'Accepted';
+
   const [isChecked, setIsChecked] = useState(offerAccepted);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleAcceptAndContinue = () => {
     if (!isChecked) return;
     acceptOffer();
+    useHiringStore.getState().acceptOfferByCandidate('CAND-001');
     toast.success('Offer Accepted!', 'Welcome aboard! Proceeding to your personal profile.');
-    navigate('/personal');
+    navigate('/candidate/personal');
   };
+
+  if (!isOfferReleased) {
+    return (
+      <div className="space-y-6 max-w-4xl mx-auto">
+        <PageHeader
+          stepId="welcome"
+          title="Employment Offer & Terms"
+          description="Please review your compensation structure, reporting relationship, and formally accept your employment contract."
+          badge={<StatusBadge status={stepStatus.welcome} size="md" />}
+        />
+
+        <Card className="p-10 text-center space-y-4 max-w-lg mx-auto border-dashed">
+          <div className="w-16 h-16 mx-auto rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+            <Clock className="w-8 h-8" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="font-heading text-lg font-bold text-slate-900 dark:text-slate-100">
+              Offer Pending Release
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Your official employment offer letter is currently undergoing final compensation and executive review.
+              Once released by your recruiting team, you will be able to review and formally accept it right here.
+            </p>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs text-slate-600 dark:text-slate-300">
+            Recruiter Owner: <strong className="text-slate-900 dark:text-white">{hiringCandidate?.recruiterOwner || 'Priya Nair'}</strong> (recruiter@apex.com)
+          </div>
+        </Card>
+
+        <StepFooter
+          backTo="/candidate"
+          backText="Dashboard"
+          canContinue={false}
+          onContinue={() => {}}
+          continueText="Offer Pending"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -163,7 +209,7 @@ export const WelcomePage: React.FC = () => {
 
       {/* Step Footer */}
       <StepFooter
-        backTo="/"
+        backTo="/candidate"
         backText="Dashboard"
         canContinue={isChecked}
         onContinue={handleAcceptAndContinue}

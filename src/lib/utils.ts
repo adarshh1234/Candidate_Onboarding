@@ -33,3 +33,35 @@ export function formatDate(dateString: string): string {
     year: 'numeric',
   }).format(date);
 }
+
+export function formatFileSize(bytes: number): string {
+  return formatBytes(bytes);
+}
+
+export function exportToCsv<T extends Record<string, unknown>>(
+  data: T[],
+  filename = 'export.csv'
+) {
+  if (data.length === 0) return;
+  const first = data[0];
+  if (!first) return;
+  const headers = Object.keys(first);
+  const headerLine = headers.map((h) => `"${h}"`).join(',');
+  const rowLines = data.map((row) =>
+    headers
+      .map((h) => {
+        const val = row[h];
+        return `"${String(val ?? '').replace(/"/g, '""')}"`;
+      })
+      .join(',')
+  );
+  const csvContent = [headerLine, ...rowLines].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}

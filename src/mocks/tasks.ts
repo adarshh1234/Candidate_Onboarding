@@ -10,7 +10,7 @@ export const mockInitialTasks: Task[] = [
     estimatedMinutes: 5,
     status: 'in_progress',
     iconName: 'FileCheck',
-    path: '/welcome',
+    path: '/candidate/welcome',
     required: true,
   },
   {
@@ -22,7 +22,7 @@ export const mockInitialTasks: Task[] = [
     estimatedMinutes: 8,
     status: 'not_started',
     iconName: 'UserCheck',
-    path: '/personal',
+    path: '/candidate/personal',
     required: true,
   },
   {
@@ -34,7 +34,7 @@ export const mockInitialTasks: Task[] = [
     estimatedMinutes: 10,
     status: 'not_started',
     iconName: 'UploadCloud',
-    path: '/documents',
+    path: '/candidate/documents',
     required: true,
   },
   {
@@ -46,7 +46,7 @@ export const mockInitialTasks: Task[] = [
     estimatedMinutes: 6,
     status: 'not_started',
     iconName: 'CreditCard',
-    path: '/bank',
+    path: '/candidate/bank',
     required: true,
   },
   {
@@ -58,7 +58,7 @@ export const mockInitialTasks: Task[] = [
     estimatedMinutes: 12,
     status: 'not_started',
     iconName: 'ShieldAlert',
-    path: '/policies',
+    path: '/candidate/policies',
     required: true,
   },
   {
@@ -70,7 +70,7 @@ export const mockInitialTasks: Task[] = [
     estimatedMinutes: 20,
     status: 'not_started',
     iconName: 'GraduationCap',
-    path: '/training',
+    path: '/candidate/training',
     required: false,
   },
   {
@@ -82,7 +82,7 @@ export const mockInitialTasks: Task[] = [
     estimatedMinutes: 5,
     status: 'not_started',
     iconName: 'Users',
-    path: '/team',
+    path: '/candidate/team',
     required: false,
   },
   {
@@ -94,7 +94,7 @@ export const mockInitialTasks: Task[] = [
     estimatedMinutes: 5,
     status: 'not_started',
     iconName: 'ListChecks',
-    path: '/checklist',
+    path: '/candidate/checklist',
     required: true,
   },
 ];

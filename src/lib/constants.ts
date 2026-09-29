@@ -30,7 +30,7 @@ export const STEP_CONFIG: Record<StepId, StepMeta> = {
     title: 'Offer Acceptance',
     shortTitle: 'Offer Letter',
     description: 'Review and formally accept your employment offer and terms.',
-    path: '/welcome',
+    path: '/candidate/welcome',
     iconName: 'FileCheck',
     required: true,
     estimatedMinutes: 5,
@@ -41,7 +41,7 @@ export const STEP_CONFIG: Record<StepId, StepMeta> = {
     title: 'Personal Information',
     shortTitle: 'Personal Info',
     description: 'Provide your contact details, residential address, and emergency contact.',
-    path: '/personal',
+    path: '/candidate/personal',
     iconName: 'UserCheck',
     required: true,
     estimatedMinutes: 8,
@@ -52,7 +52,7 @@ export const STEP_CONFIG: Record<StepId, StepMeta> = {
     title: 'Document Verification',
     shortTitle: 'Documents',
     description: 'Upload identification, academic credentials, and previous employment proofs.',
-    path: '/documents',
+    path: '/candidate/documents',
     iconName: 'UploadCloud',
     required: true,
     estimatedMinutes: 10,
@@ -63,7 +63,7 @@ export const STEP_CONFIG: Record<StepId, StepMeta> = {
     title: 'Bank & Tax Information',
     shortTitle: 'Bank & Tax',
     description: 'Submit salary disbursement account, PAN card, and tax declaration.',
-    path: '/bank',
+    path: '/candidate/bank',
     iconName: 'CreditCard',
     required: true,
     estimatedMinutes: 6,
@@ -74,7 +74,7 @@ export const STEP_CONFIG: Record<StepId, StepMeta> = {
     title: 'Company Policies',
     shortTitle: 'Policies',
     description: 'Read and acknowledge core security, compliance, and code of conduct policies.',
-    path: '/policies',
+    path: '/candidate/policies',
     iconName: 'ShieldAlert',
     required: true,
     estimatedMinutes: 12,
@@ -85,7 +85,7 @@ export const STEP_CONFIG: Record<StepId, StepMeta> = {
     title: 'Onboarding Modules',
     shortTitle: 'Training',
     description: 'Watch introductory orientation videos and foundational security training.',
-    path: '/training',
+    path: '/candidate/training',
     iconName: 'GraduationCap',
     required: false,
     estimatedMinutes: 20,
@@ -96,7 +96,7 @@ export const STEP_CONFIG: Record<StepId, StepMeta> = {
     title: 'Meet Your Team',
     shortTitle: 'Team',
     description: 'Discover your teammates, learn their roles, and schedule introductory 1:1s.',
-    path: '/team',
+    path: '/candidate/team',
     iconName: 'Users',
     required: false,
     estimatedMinutes: 5,
@@ -107,12 +107,56 @@ export const STEP_CONFIG: Record<StepId, StepMeta> = {
     title: 'Day-1 Readiness Checklist',
     shortTitle: 'Day-1 Checklist',
     description: 'Track equipment delivery, access credentials, and finish final submission.',
-    path: '/checklist',
+    path: '/candidate/checklist',
     iconName: 'ListChecks',
     required: true,
     estimatedMinutes: 5,
   },
 };
+
+export const RECRUITER_DEPARTMENTS = [
+  'Engineering',
+  'Product',
+  'Design',
+  'Data & AI',
+  'Sales',
+  'Marketing',
+  'Human Resources',
+  'Finance & Legal',
+] as const;
+
+export const RECRUITER_LOCATIONS = [
+  'Bengaluru, India',
+  'Hyderabad, India',
+  'Pune, India',
+  'Mumbai, India',
+  'Delhi NCR, India',
+  'Remote (India)',
+  'Singapore',
+  'London, UK',
+] as const;
+
+export const BGV_VENDORS = [
+  'AuthBridge',
+  'First Advantage',
+  'Kroll Verification',
+  'Sterling Talent Solutions',
+] as const;
+
+export const RECRUITER_SIDEBAR_ITEMS = [
+  { label: 'Final List', path: '/recruiter/final-list', icon: 'Users2', badgeKey: 'total' },
+  { label: 'Background Verification', path: '/recruiter/background-verification', icon: 'ShieldCheck', badgeKey: 'bgvPending' },
+  { label: 'Assessments', path: '/recruiter/assessments', icon: 'CheckSquare', badgeKey: 'assessments' },
+  { label: 'Offers', path: '/recruiter/offers', icon: 'FileSignature', badgeKey: 'offersPending' },
+  { label: 'Documents', path: '/recruiter/documents', icon: 'FolderCheck', badgeKey: 'docsPending' },
+  { label: 'Provisions', path: '/recruiter/provisions', icon: 'Laptop', badgeKey: 'provisions' },
+  { label: 'Buddy/Direct Manager', path: '/recruiter/buddy-manager', icon: 'UserCheck', badgeKey: 'unassignedBuddy' },
+  { label: 'Training', path: '/recruiter/training', icon: 'GraduationCap', badgeKey: 'training' },
+  { label: 'Visa & Immigration', path: '/recruiter/visa-immigration', icon: 'Globe', badgeKey: 'visaCases' },
+  { label: 'Insurance', path: '/recruiter/insurance', icon: 'HeartPulse', badgeKey: 'insurance' },
+  { label: 'Other Miscellaneous', path: '/recruiter/miscellaneous', icon: 'Boxes', badgeKey: 'misc' },
+  { label: 'Reports', path: '/recruiter/reports', icon: 'BarChart3', badgeKey: 'reports' },
+] as const;
 
 export const DOC_CONFIGS: DocTypeConfig[] = [
   {

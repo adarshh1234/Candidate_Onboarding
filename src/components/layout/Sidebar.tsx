@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   FileCheck,
@@ -22,6 +22,7 @@ import {
   selectOverallProgress,
   isStepLocked,
 } from '@/store/onboarding.store';
+import { useAuthStore } from '@/store/auth.store';
 import { STEP_ORDER, STEP_CONFIG } from '@/lib/constants';
 import { Tooltip } from '@/components/ui/tooltip';
 import { Progress } from '@/components/ui/progress';
@@ -52,11 +53,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleCollapse,
   onNavigateMobile,
 }) => {
+  const navigate = useNavigate();
   const stepStatus = useOnboardingStore((state) => state.stepStatus);
   const overallProgress = useOnboardingStore(selectOverallProgress);
+  const logout = useAuthStore((state) => state.logout);
 
   const handleSignOut = () => {
-    toast.info('Sign Out Requested', 'Session is managed in demo mode.');
+    logout();
+    toast.info('Signed Out', 'You have been signed out of Onboardly.');
+    navigate('/login');
   };
 
   return (
@@ -70,7 +75,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Logo / Brand Header */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-slate-200/80 dark:border-slate-800/80">
           <NavLink
-            to="/"
+            to="/candidate"
             onClick={onNavigateMobile}
             className="flex items-center gap-2.5 focus-visible:outline-none"
           >
@@ -106,7 +111,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-17rem)]" aria-label="Portal Navigation">
           {/* Dashboard item */}
           <NavLink
-            to="/"
+            to="/candidate"
             end
             onClick={onNavigateMobile}
             className={({ isActive }) =>

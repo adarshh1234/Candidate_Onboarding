@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, FileCheck } from 'lucide-react';
 import { useOnboardingStore } from '@/store/onboarding.store';
+import { useHiringStore } from '@/store/hiring.store';
 import { DOC_CONFIGS } from '@/lib/constants';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { StepFooter } from '@/components/layout/StepFooter';
@@ -19,16 +20,34 @@ export const DocumentsPage: React.FC = () => {
   const removeUploadedDoc = useOnboardingStore((state) => state.removeUploadedDoc);
   const setStepStatus = useOnboardingStore((state) => state.setStepStatus);
 
+  const hiringCandidate = useHiringStore((state) => state.getCandidate('CAND-001'));
+
+  // Merge candidate documents with recruiter review statuses
+  const effectiveDocs = uploadedDocs.map((doc) => {
+    const hiringDoc = hiringCandidate?.documents.find(
+      (d) => d.id === doc.id || d.type === doc.type,
+    );
+    if (hiringDoc) {
+      return {
+        ...doc,
+        status: hiringDoc.status || doc.status,
+        rejectionReason: hiringDoc.rejectionReason || doc.rejectionReason,
+      };
+    }
+    return doc;
+  });
+
   const requiredConfigs = DOC_CONFIGS.filter((c) => c.required);
   const uploadedRequiredCount = requiredConfigs.filter((cfg) =>
-    uploadedDocs.some((d) => d.type === cfg.id),
+    effectiveDocs.some((d) => d.type === cfg.id),
   ).length;
 
   const canContinue = uploadedRequiredCount === requiredConfigs.length;
 
   const handleUploadSuccess = (doc: UploadedDoc) => {
     addUploadedDoc(doc);
-    toast.success('Document Uploaded', `${doc.name} verified and encrypted.`);
+    useHiringStore.getState().uploadCandidateDocument('CAND-001', doc);
+    toast.success('Document Uploaded', `${doc.name} submitted and queued for recruiter review.`);
   };
 
   const handleRemove = (docId: string) => {
@@ -46,7 +65,7 @@ export const DocumentsPage: React.FC = () => {
     }
     setStepStatus('documents', 'completed');
     toast.success('Documents Verified', 'All necessary credentials recorded.');
-    navigate('/bank');
+    navigate('/candidate/bank');
   };
 
   return (
@@ -84,7 +103,7 @@ export const DocumentsPage: React.FC = () => {
       {/* Grid of File Dropzones */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {DOC_CONFIGS.map((config) => {
-          const uploaded = uploadedDocs.find((d) => d.type === config.id);
+          const uploaded = effectiveDocs.find((d) => d.type === config.id);
           return (
             <FileDropzone
               key={config.id}
@@ -109,7 +128,7 @@ export const DocumentsPage: React.FC = () => {
 
       {/* Step Footer */}
       <StepFooter
-        backTo="/personal"
+        backTo="/candidate/personal"
         canContinue={canContinue}
         onContinue={handleContinue}
         continueText="Continue to Bank & Tax"

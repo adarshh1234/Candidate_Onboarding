@@ -1,144 +1,222 @@
-import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
+import { RecruiterShell } from '@/components/recruiter/RecruiterShell';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
-import { PageLoadingSkeleton } from '@/components/common/LoadingSkeleton';
-
-// Lazy-loaded pages
-const DashboardPage = lazy(() =>
-  import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
-);
-const WelcomePage = lazy(() =>
-  import('@/features/welcome/WelcomePage').then((m) => ({ default: m.WelcomePage })),
-);
-const PersonalInfoPage = lazy(() =>
-  import('@/features/personal/PersonalInfoPage').then((m) => ({ default: m.PersonalInfoPage })),
-);
-const DocumentsPage = lazy(() =>
-  import('@/features/documents/DocumentsPage').then((m) => ({ default: m.DocumentsPage })),
-);
-const BankTaxPage = lazy(() =>
-  import('@/features/bank/BankTaxPage').then((m) => ({ default: m.BankTaxPage })),
-);
-const PoliciesPage = lazy(() =>
-  import('@/features/policies/PoliciesPage').then((m) => ({ default: m.PoliciesPage })),
-);
-const TrainingPage = lazy(() =>
-  import('@/features/training/TrainingPage').then((m) => ({ default: m.TrainingPage })),
-);
-const TeamPage = lazy(() =>
-  import('@/features/team/TeamPage').then((m) => ({ default: m.TeamPage })),
-);
-const ChecklistPage = lazy(() =>
-  import('@/features/checklist/ChecklistPage').then((m) => ({ default: m.ChecklistPage })),
-);
-
+import { RequireAuth, RootRedirect } from '@/components/layout/RequireAuth';
 import { RouteGuard } from '@/components/layout/RouteGuard';
 
+// Auth Pages
+import { LoginPage } from '@/features/auth/LoginPage';
+
+// Candidate Portal Pages
+import { DashboardPage } from '@/features/dashboard/DashboardPage';
+import { WelcomePage } from '@/features/welcome/WelcomePage';
+import { PersonalInfoPage } from '@/features/personal/PersonalInfoPage';
+import { DocumentsPage } from '@/features/documents/DocumentsPage';
+import { BankTaxPage } from '@/features/bank/BankTaxPage';
+import { PoliciesPage } from '@/features/policies/PoliciesPage';
+import { TrainingPage } from '@/features/training/TrainingPage';
+import { TeamPage } from '@/features/team/TeamPage';
+import { ChecklistPage } from '@/features/checklist/ChecklistPage';
+
+// Recruiter Portal Pages
+import { FinalListPage } from '@/features/recruiter/final-list/FinalListPage';
+import { BGVPage } from '@/features/recruiter/bgv/BGVPage';
+import { AssessmentsPage } from '@/features/recruiter/assessments/AssessmentsPage';
+import { OffersPage } from '@/features/recruiter/offers/OffersPage';
+import { DocumentsReviewPage } from '@/features/recruiter/documents/DocumentsReviewPage';
+import { ProvisionsPage } from '@/features/recruiter/provisions/ProvisionsPage';
+import { BuddyManagerPage } from '@/features/recruiter/buddy-manager/BuddyManagerPage';
+import { RecruiterTrainingPage } from '@/features/recruiter/training/RecruiterTrainingPage';
+import { VisaPage } from '@/features/recruiter/visa/VisaPage';
+import { InsurancePage } from '@/features/recruiter/insurance/InsurancePage';
+import { MiscPage } from '@/features/recruiter/miscellaneous/MiscPage';
+import { ReportsPage } from '@/features/recruiter/reports/ReportsPage';
+
 export const router = createBrowserRouter([
+  // Public Auth Route
   {
-    path: '/',
+    path: '/login',
     element: (
       <ErrorBoundary>
-        <AppShell />
+        <LoginPage />
+      </ErrorBoundary>
+    ),
+  },
+
+  // Root redirect based on auth status and role
+  {
+    path: '/',
+    element: <RootRedirect />,
+  },
+
+  // Candidate Portal Routes (Protected by role='candidate')
+  {
+    path: '/candidate',
+    element: (
+      <ErrorBoundary>
+        <RequireAuth allowedRole="candidate">
+          <AppShell />
+        </RequireAuth>
       </ErrorBoundary>
     ),
     errorElement: (
       <ErrorBoundary>
-        <Navigate to="/" replace />
+        <Navigate to="/candidate" replace />
       </ErrorBoundary>
     ),
     children: [
       {
         index: true,
-        element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <DashboardPage />
-          </Suspense>
-        ),
+        element: <DashboardPage />,
       },
       {
         path: 'welcome',
-        element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <WelcomePage />
-          </Suspense>
-        ),
+        element: <WelcomePage />,
       },
       {
         path: 'personal',
         element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <RouteGuard stepId="personal">
-              <PersonalInfoPage />
-            </RouteGuard>
-          </Suspense>
+          <RouteGuard stepId="personal">
+            <PersonalInfoPage />
+          </RouteGuard>
         ),
       },
       {
         path: 'documents',
         element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <RouteGuard stepId="documents">
-              <DocumentsPage />
-            </RouteGuard>
-          </Suspense>
+          <RouteGuard stepId="documents">
+            <DocumentsPage />
+          </RouteGuard>
         ),
       },
       {
         path: 'bank',
         element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <RouteGuard stepId="bank">
-              <BankTaxPage />
-            </RouteGuard>
-          </Suspense>
+          <RouteGuard stepId="bank">
+            <BankTaxPage />
+          </RouteGuard>
         ),
       },
       {
         path: 'policies',
         element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <RouteGuard stepId="policies">
-              <PoliciesPage />
-            </RouteGuard>
-          </Suspense>
+          <RouteGuard stepId="policies">
+            <PoliciesPage />
+          </RouteGuard>
         ),
       },
       {
         path: 'training',
         element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <RouteGuard stepId="training">
-              <TrainingPage />
-            </RouteGuard>
-          </Suspense>
+          <RouteGuard stepId="training">
+            <TrainingPage />
+          </RouteGuard>
         ),
       },
       {
         path: 'team',
         element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <RouteGuard stepId="team">
-              <TeamPage />
-            </RouteGuard>
-          </Suspense>
+          <RouteGuard stepId="team">
+            <TeamPage />
+          </RouteGuard>
         ),
       },
       {
         path: 'checklist',
         element: (
-          <Suspense fallback={<PageLoadingSkeleton />}>
-            <RouteGuard stepId="checklist">
-              <ChecklistPage />
-            </RouteGuard>
-          </Suspense>
+          <RouteGuard stepId="checklist">
+            <ChecklistPage />
+          </RouteGuard>
         ),
       },
+    ],
+  },
+
+  // Recruiter Portal Routes (Protected by role='recruiter')
+  {
+    path: '/recruiter',
+    element: (
+      <ErrorBoundary>
+        <RequireAuth allowedRole="recruiter">
+          <RecruiterShell />
+        </RequireAuth>
+      </ErrorBoundary>
+    ),
+    errorElement: (
+      <ErrorBoundary>
+        <Navigate to="/recruiter/final-list" replace />
+      </ErrorBoundary>
+    ),
+    children: [
       {
-        path: '*',
-        element: <Navigate to="/" replace />,
+        index: true,
+        element: <Navigate to="/recruiter/final-list" replace />,
+      },
+      {
+        path: 'final-list',
+        element: <FinalListPage />,
+      },
+      {
+        path: 'background-verification',
+        element: <BGVPage />,
+      },
+      {
+        path: 'assessments',
+        element: <AssessmentsPage />,
+      },
+      {
+        path: 'offers',
+        element: <OffersPage />,
+      },
+      {
+        path: 'documents',
+        element: <DocumentsReviewPage />,
+      },
+      {
+        path: 'provisions',
+        element: <ProvisionsPage />,
+      },
+      {
+        path: 'buddy-manager',
+        element: <BuddyManagerPage />,
+      },
+      {
+        path: 'training',
+        element: <RecruiterTrainingPage />,
+      },
+      {
+        path: 'visa-immigration',
+        element: <VisaPage />,
+      },
+      {
+        path: 'insurance',
+        element: <InsurancePage />,
+      },
+      {
+        path: 'miscellaneous',
+        element: <MiscPage />,
+      },
+      {
+        path: 'reports',
+        element: <ReportsPage />,
       },
     ],
+  },
+
+  // Legacy direct step route compatibility redirects
+  { path: '/welcome', element: <Navigate to="/candidate/welcome" replace /> },
+  { path: '/personal', element: <Navigate to="/candidate/personal" replace /> },
+  { path: '/documents', element: <Navigate to="/candidate/documents" replace /> },
+  { path: '/bank', element: <Navigate to="/candidate/bank" replace /> },
+  { path: '/policies', element: <Navigate to="/candidate/policies" replace /> },
+  { path: '/training', element: <Navigate to="/candidate/training" replace /> },
+  { path: '/team', element: <Navigate to="/candidate/team" replace /> },
+  { path: '/checklist', element: <Navigate to="/candidate/checklist" replace /> },
+
+  // Catch-all
+  {
+    path: '*',
+    element: <RootRedirect />,
   },
 ]);

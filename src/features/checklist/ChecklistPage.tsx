@@ -13,6 +13,7 @@ import {
   Check,
 } from 'lucide-react';
 import { useOnboardingStore } from '@/store/onboarding.store';
+import { useHiringStore } from '@/store/hiring.store';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -55,6 +56,18 @@ export const ChecklistPage: React.FC = () => {
 
   const handleConfirmSubmit = () => {
     submitOnboarding();
+    useHiringStore.getState().updateCandidate('CAND-001', {
+      stage: 'Ready for Day 1',
+      overallProgress: 100,
+    });
+    useHiringStore.getState().appendActivity({
+      actor: 'Candidate (Aarav Sharma)',
+      candidateId: 'CAND-001',
+      candidateName: 'Aarav Sharma',
+      action: 'Onboarding Submitted',
+      details: 'All 8 steps completed and verified for Day-1 readiness.',
+      type: 'system',
+    });
     setIsConfirmOpen(false);
     confetti({
       particleCount: 150,
@@ -62,8 +75,8 @@ export const ChecklistPage: React.FC = () => {
       origin: { y: 0.5 },
     });
     toast.success(
-      'Onboarding Completed!',
-      'Congratulations! Your submission has been officially forwarded to People Ops.',
+      'Onboarding Submitted!',
+      'Congratulations! You are officially prepared and compliant for Day 1.',
     );
   };
 

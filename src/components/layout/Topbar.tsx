@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Bell,
   CheckCircle2,
@@ -8,8 +9,11 @@ import {
   Sparkles,
   Check,
   Menu,
+  LogOut,
 } from 'lucide-react';
 import { useOnboardingStore } from '@/store/onboarding.store';
+import { useAuthStore } from '@/store/auth.store';
+import { useHiringStore } from '@/store/hiring.store';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
@@ -20,13 +24,15 @@ export interface TopbarProps {
 }
 
 export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
+  const navigate = useNavigate();
   const candidate = useOnboardingStore((state) => state.candidate);
   const notifications = useOnboardingStore((state) => state.notifications);
   const markNotificationAsRead = useOnboardingStore((state) => state.markNotificationAsRead);
   const markAllNotificationsAsRead = useOnboardingStore(
     (state) => state.markAllNotificationsAsRead,
   );
-  const resetOnboarding = useOnboardingStore((state) => state.resetOnboarding);
+  const logout = useAuthStore((state) => state.logout);
+  const role = useAuthStore((state) => state.role);
 
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -49,10 +55,16 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
   }, [isNotifOpen]);
 
   const handleReset = () => {
-    if (window.confirm('Reset all onboarding progress to initial state?')) {
-      resetOnboarding();
-      toast.info('Onboarding Reset', 'All steps and drafts have been restored to initial state.');
+    if (window.confirm('Reset all onboarding and recruiter demo data to initial state?')) {
+      useHiringStore.getState().resetDemo();
+      toast.info('Demo Reset', 'All portals restored to initial seed state.');
     }
+  };
+
+  const handleSignOut = () => {
+    logout();
+    toast.info('Signed Out', 'You have been signed out.');
+    navigate('/login');
   };
 
   return (
@@ -183,6 +195,11 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
         {/* Theme Toggle */}
         <ThemeToggle />
 
+        {/* Role Badge */}
+        <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+          {role || 'Candidate'}
+        </span>
+
         {/* User Avatar & Name Pill */}
         <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
           <div className="relative">
@@ -202,6 +219,19 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleMobileMenu }) => {
             </p>
           </div>
         </div>
+
+        {/* Quick Sign Out button */}
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={handleSignOut}
+          className="p-2 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400"
+          title="Sign Out"
+          aria-label="Sign Out"
+        >
+          <LogOut className="w-4 h-4" />
+        </Button>
       </div>
     </header>
   );

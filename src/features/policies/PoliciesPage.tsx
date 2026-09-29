@@ -87,7 +87,7 @@ export const PoliciesPage: React.FC = () => {
     }
     setStepStatus('policies', 'completed');
     toast.success('Compliance Step Complete', 'Proceeding to Onboarding Modules.');
-    navigate('/training');
+    navigate('/candidate/training');
   };
 
   return (
@@ -219,7 +219,7 @@ export const PoliciesPage: React.FC = () => {
 
       {/* Step Footer */}
       <StepFooter
-        backTo="/bank"
+        backTo="/candidate/bank"
         canContinue={allAcknowledged}
         onContinue={handleContinue}
         continueText="Continue to Training Modules"

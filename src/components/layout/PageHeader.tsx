@@ -27,7 +27,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-slate-400">
           <Link
-            to="/"
+            to="/candidate"
             className="flex items-center gap-1 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
           >
             <Home className="w-3.5 h-3.5" />

@@ -83,7 +83,7 @@ export const PersonalInfoPage: React.FC = () => {
     });
     setStepStatus('personal', 'completed');
     toast.success('Personal Info Saved', 'Your personal and emergency records are updated.');
-    navigate('/documents');
+    navigate('/candidate/documents');
   };
 
   return (
@@ -283,7 +283,7 @@ export const PersonalInfoPage: React.FC = () => {
 
         {/* Step Footer */}
         <StepFooter
-          backTo="/welcome"
+          backTo="/candidate/welcome"
           canContinue={true}
           isSubmitting={isSubmitting}
           continueText="Save & Continue to Documents"

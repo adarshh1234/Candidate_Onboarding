@@ -10,6 +10,7 @@ export interface DialogProps {
   description?: string;
   children: React.ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl';
 }
 
 export const Dialog: React.FC<DialogProps> = ({
@@ -19,7 +20,9 @@ export const Dialog: React.FC<DialogProps> = ({
   description,
   children,
   maxWidth = 'md',
+  size,
 }) => {
+  const effectiveMaxWidth = size || maxWidth;
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -77,7 +80,7 @@ export const Dialog: React.FC<DialogProps> = ({
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
             className={cn(
               'relative w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl z-10 overflow-hidden my-8',
-              maxWidthClasses[maxWidth],
+              maxWidthClasses[effectiveMaxWidth],
             )}
           >
             {/* Header */}

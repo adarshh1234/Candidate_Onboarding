@@ -8,6 +8,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { useOnboardingStore } from '@/store/onboarding.store';
+import { useHiringStore } from '@/store/hiring.store';
 import { mockTeamMembers } from '@/mocks/team';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { StepFooter } from '@/components/layout/StepFooter';
@@ -24,6 +25,7 @@ export const TeamPage: React.FC = () => {
   const navigate = useNavigate();
   const stepStatus = useOnboardingStore((state) => state.stepStatus);
   const setStepStatus = useOnboardingStore((state) => state.setStepStatus);
+  const hiringCandidate = useHiringStore((state) => state.getCandidate('CAND-001'));
 
   const [teamList, setTeamList] = useState<TeamMember[]>(mockTeamMembers);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
@@ -31,7 +33,22 @@ export const TeamPage: React.FC = () => {
   const [meetingTime, setMeetingTime] = useState('03:00 PM');
   const [meetingTopic, setMeetingTopic] = useState('Introductory Sync & Onboarding Questions');
 
-  const manager = teamList.find((m) => m.isManager) || teamList[0]!;
+  // Synchronize Manager from hiring store if assigned
+  const bm = hiringCandidate?.buddyManager;
+  const rawManager = teamList.find((m) => m.isManager) || teamList[0]!;
+  const manager: TeamMember = bm?.managerName
+    ? {
+        ...rawManager,
+        name: bm.managerName,
+        role: bm.managerRole || rawManager.role,
+        email: bm.managerEmail || rawManager.email,
+        avatarInitials: bm.managerName
+          .split(' ')
+          .map((n) => n[0])
+          .join(''),
+      }
+    : rawManager;
+
   const peers = teamList.filter((m) => !m.isManager);
 
   const handleMessage = (member: TeamMember) => {
@@ -77,7 +94,7 @@ export const TeamPage: React.FC = () => {
   const handleContinue = () => {
     setStepStatus('team', 'completed');
     toast.success('Team Section Complete', 'Moving to Day-1 Checklist.');
-    navigate('/checklist');
+    navigate('/candidate/checklist');
   };
 
   return (
@@ -268,8 +285,8 @@ export const TeamPage: React.FC = () => {
 
       {/* Step Footer */}
       <StepFooter
-        backTo="/training"
-        nextTo="/checklist"
+        backTo="/candidate/training"
+        nextTo="/candidate/checklist"
         canContinue={true}
         onContinue={handleContinue}
         continueText="Continue to Day-1 Checklist"

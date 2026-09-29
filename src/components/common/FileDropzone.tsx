@@ -129,9 +129,32 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
         </div>
 
         {uploadedDoc && (
-          <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            Uploaded
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full border shrink-0',
+              uploadedDoc.status === 'verified'
+                ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800'
+                : uploadedDoc.status === 'rejected'
+                  ? 'text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-900'
+                  : 'text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800',
+            )}
+          >
+            {uploadedDoc.status === 'verified' ? (
+              <>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                Verified
+              </>
+            ) : uploadedDoc.status === 'rejected' ? (
+              <>
+                <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
+                Rejected
+              </>
+            ) : (
+              <>
+                <RefreshCw className="w-3.5 h-3.5 text-amber-500" />
+                Pending Review
+              </>
+            )}
           </span>
         )}
       </div>
@@ -159,9 +182,9 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
           </div>
         </div>
       ) : uploadedDoc ? (
-        /* Uploaded Document Card */
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
-          <div className="flex items-center gap-3 min-w-0">
+        /* Uploaded Document Card - Clean, spacious layout */
+        <div className="p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-3">
+          <div className="flex items-start gap-3">
             {/* Thumbnail or Icon */}
             {isImage && uploadedDoc.previewUrl ? (
               <img
@@ -178,11 +201,16 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
                 )}
               </div>
             )}
-            <div className="min-w-0">
-              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
+
+            {/* Filename and Meta in dedicated stacked layout */}
+            <div className="flex-1 min-w-0">
+              <p
+                title={uploadedDoc.name}
+                className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate block cursor-default"
+              >
                 {uploadedDoc.name}
               </p>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
                 {formatBytes(uploadedDoc.size)} • Uploaded{' '}
                 {new Date(uploadedDoc.uploadedAt).toLocaleTimeString([], {
                   hour: '2-digit',
@@ -192,37 +220,53 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
             </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
+          {/* Rejection reason callout if rejected */}
+          {uploadedDoc.status === 'rejected' && (
+            <div className="p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 text-[11px] text-rose-700 dark:text-rose-300 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" />
+              <div className="space-y-0.5">
+                <span className="font-bold">Rejected by Recruiter:</span>{' '}
+                <span>{uploadedDoc.rejectionReason || 'Please provide a clearer official copy.'}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Action buttons row beneath or wrapping cleanly */}
+          <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-end flex-wrap gap-2">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleDownload}
-              title="Download file"
+              title={`Download ${uploadedDoc.name}`}
               aria-label={`Download ${uploadedDoc.name}`}
+              className="text-xs"
             >
-              <Download className="w-3.5 h-3.5 mr-1" />
-              Download
+              <Download className="w-3.5 h-3.5 sm:mr-1" />
+              <span className="hidden sm:inline">Download</span>
             </Button>
             <Button
               type="button"
-              variant="outline"
+              variant={uploadedDoc.status === 'rejected' ? 'primary' : 'outline'}
               size="sm"
               onClick={() => fileInputRef.current?.click()}
-              title="Replace document"
+              title={`Replace ${uploadedDoc.name}`}
               aria-label={`Replace ${uploadedDoc.name}`}
+              className="text-xs"
             >
-              <RefreshCw className="w-3.5 h-3.5 mr-1" />
-              Replace
+              <RefreshCw className="w-3.5 h-3.5 sm:mr-1" />
+              <span className="hidden sm:inline">
+                {uploadedDoc.status === 'rejected' ? 'Re-upload' : 'Replace'}
+              </span>
             </Button>
             <Button
               type="button"
               variant="danger"
               size="sm"
               onClick={() => onRemove(uploadedDoc.id)}
-              title="Delete document"
+              title={`Delete ${uploadedDoc.name}`}
               aria-label={`Remove ${uploadedDoc.name}`}
+              className="text-xs px-2.5"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </Button>

@@ -81,7 +81,7 @@ export const BankTaxPage: React.FC = () => {
     saveBankDraft(data);
     setStepStatus('bank', 'completed');
     toast.success('Bank & Tax Saved', 'Direct deposit and tax compliance details submitted.');
-    navigate('/policies');
+    navigate('/candidate/policies');
   };
 
   const currentAccountNumber = watch('accountNumber') || '';
@@ -311,7 +311,7 @@ export const BankTaxPage: React.FC = () => {
 
         {/* Step Footer */}
         <StepFooter
-          backTo="/documents"
+          backTo="/candidate/documents"
           canContinue={true}
           isSubmitting={isSubmitting}
           continueText="Save & Continue to Policies"

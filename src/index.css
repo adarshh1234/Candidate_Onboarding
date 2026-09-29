@@ -8,6 +8,11 @@
     --brand-secondary: #764ba2;
   }
 
+  [data-portal="recruiter"] {
+    --brand-primary: #0D9488;
+    --brand-secondary: #0F766E;
+  }
+
   /* Custom smooth scrolling */
   html {
     scroll-behavior: smooth;
@@ -17,6 +22,23 @@
   *:focus-visible {
     outline: 2px solid #6366f1;
     outline-offset: 2px;
+  }
+
+  [data-portal="recruiter"] *:focus-visible {
+    outline: 2px solid #0D9488;
+    outline-offset: 2px;
+  }
+}
+
+@media print {
+  aside, header, nav, .no-print {
+    display: none !important;
+  }
+  body, main {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 }
 
